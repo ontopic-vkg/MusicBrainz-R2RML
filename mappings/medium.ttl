@@ -48,10 +48,10 @@ lb:medium_track a rr:TriplesMap ;
 
 lb:medium_format a rr:TriplesMap ;
   rr:logicalTable [rr:sqlQuery
-    """SELECT medium.id, medium_format.id as medium_format_id
+    """SELECT medium.id, medium_format.name as medium_format_name
        FROM medium
          INNER JOIN medium_format ON medium.format = medium_format.id"""];
   rr:subjectMap lb:sm_medium ;
   rr:predicateObjectMap
     [rr:predicate mo:media_type ;
-     rr:objectMap [rr:column "medium_format_id" ; rr:termType rr:IRI]] .
+     rr:objectMap [rr:template "http://example.org/media_format/{medium_format_name}#_" ; rr:termType rr:IRI]] .
