@@ -1,0 +1,4 @@
+FROM stain/jena
+
+CMD mkdir /rdf/mappings
+COPY ./mappings/* /rdf/mappings/

@@ -19,28 +19,32 @@ Please report any issues on [our Jira tracker](https://tickets.metabrainz.org/),
 
 ## SPARQL endpoint
 
-Use MusicBrainz as a Virtual Knowledge Graph, where SPARQL queries are translated into SQL queries, which are then executed over the PostgreSQL database. In this setting, no materialization is needed.
+Uses MusicBrainz as a Virtual Knowledge Graph, where SPARQL queries are translated into SQL queries, which are then executed over the PostgreSQL database. In this setting, no materialization is needed.
 
-### Additional requirements
-
-#### Ontop >= 4.0.3
-Download `ontop-cli` on https://github.com/ontop/ontop/releases and define the `ONTOP_DIR` environment variable.
-
-#### Apache Jena
-Download [Apache Jena](https://jena.apache.org/download/) and define the `JENA_DIR` environment variable.
+Is based on [Ontop](https://ontop-vkg.org) and runs a Docker container.
 
 
 ### Merging the mapping files
 
 ```bash
 cd MusicBrainz-R2RML
-${JENA_DIR}/bin/rdfcat -out Turtle mappings/*.ttl > merged-mapping.ttl
+docker build -t jena -f jena-Dockerfile .
+docker run jena riot --formatted=TURTLE  ./mappings/*.ttl > ./merged-mapping.ttl
 ```
 
-### Downloading and merging the ontology files
+### Download the JDBC driver
+
+Download [the PostgreSQL JDBC driver](https://jdbc.postgresql.org/download.html) and copy it into the `jdbc` folder.
 
 
-### SPARQL endpoint
+
+### Start the SPARQL endpoint
 ```bash
-${ONTOP_DIR}/ontop endpoint --mapping merged-mapping.ttl -p musicbrainz_config.properties
+docker run --rm \
+           -v $PWD:/opt/ontop/input \
+           -v $PWD/jdbc:/opt/ontop/jdbc \
+           -e ONTOP_MAPPING_FILE=/opt/ontop/input/merged-mapping.ttl \
+           -e ONTOP_PROPERTIES_FILE=/opt/ontop/input/ontop.docker.properties \
+           -p 8083:8080 \
+           ontop/ontop-endpoint:4.1-snapshot
 ```
