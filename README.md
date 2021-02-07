@@ -15,3 +15,32 @@ Note that the file `musicbrainz_compile_config.properties` must reflect your DB 
 * `musicbrainz_db_slave` is the default for a replicated database
 
 Please report any issues on [our Jira tracker](https://tickets.metabrainz.org/), under the `LINKB` project.
+
+
+## SPARQL endpoint
+
+Use MusicBrainz as a Virtual Knowledge Graph, where SPARQL queries are translated into SQL queries, which are then executed over the PostgreSQL database. In this setting, no materialization is needed.
+
+### Additional requirements
+
+#### Ontop >= 4.0.3
+Download `ontop-cli` on https://github.com/ontop/ontop/releases and define the `ONTOP_DIR` environment variable.
+
+#### Apache Jena
+Download [Apache Jena](https://jena.apache.org/download/) and define the `JENA_DIR` environment variable.
+
+
+### Merging the mapping files
+
+```bash
+cd MusicBrainz-R2RML
+${JENA_DIR}/bin/rdfcat -out Turtle mappings/*.ttl > merged-mapping.ttl
+```
+
+### Downloading and merging the ontology files
+
+
+### SPARQL endpoint
+```bash
+${ONTOP_DIR}/ontop endpoint --mapping merged-mapping.ttl -p musicbrainz_config.properties
+```
