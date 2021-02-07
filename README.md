@@ -29,7 +29,7 @@ Is based on [Ontop](https://ontop-vkg.org) and runs a Docker container.
 ```bash
 cd MusicBrainz-R2RML
 docker build -t jena -f jena-Dockerfile .
-docker run jena riot --formatted=TURTLE  ./mappings/*.ttl > ./merged-mapping.ttl
+docker run --rm jena riot --formatted=TURTLE  ./mappings/*.ttl > ./merged-mapping.ttl
 ```
 
 ### Download the JDBC driver
@@ -48,3 +48,5 @@ docker run --rm \
            -p 8083:8080 \
            ontop/ontop-endpoint:4.1-snapshot
 ```
+
+Visit http://localhost:8083/ .
